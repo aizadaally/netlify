@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Water Resource Mapping</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh; /* Full-screen height */
+        }
+        video {
+            width: 100%;
+            border-radius: 5px;
+        }
+        .info-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+        }
+        .info-box h2 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        .info-box p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Info Box for Problem Statement and Research Question -->
+    <div class="info-box">
+        <h2>Problem Statement</h2>
+        <p>Water resources play a vital role in supporting communities and ecosystems. This mapping project focuses on how various water bodies around the world are impacted by climate change, human activity, and natural events. We aim to explore the connection between water and people, addressing the growing issue of water scarcity and flooding.</p>
+        <h3>Research Question</h3>
+        <p><strong>How can design interventions in public spaces provoke awareness, responsibility, and collective action toward water conservation?</strong></p>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([42.87, 74.59], 2); // World view
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add markers with triggers
+        const triggers = [
+            // Kyrgyzstan
+            {
+                name: "Floods in Osh, Kyrgyzstan",
+                location: [40.5150, 72.7890],
+                description: "An impact of floods in Osh, Kyrgyzstan, and the challenges faced by local communities due to the excess of water.",
+                video: "./videos/Osh.mp4"  // Placeholder for downloadable video
+            },
+            // Germany (Cologne)
+            {
+                name: "Flotow, Köln",
+                location: [50.9375, 6.9603],
+                description: "Since coming to Germany, my showers lasted only 3 minutes—just enough to get clean. There’s no time to relax. In Japan, I’d soak in the bath for an hour every winter day. Maybe water is scarcer in Germany?",
+                video: "./videos/shower.mp4"
+            },
+            {
+                name: "Stadtwald 2, 50935 Köln",
+                location: [50.9413, 6.9583],
+                description: "I was thirsty and searched for a tap. I rode my bike through the park, hoping to find one, but there was none. In the end, I bit into ice. In Japan, taps are everywhere—maybe water is scarcer in Germany?",
+                video: "./videos/tap.mp4"
+            },
+            // Barcelona (Precise Locations)
+            {
+                name: "Pl. Reial, Barcelona",
+                location: [41.3784, 2.1848],
+                description: "There is not enough water so they emptied the fountains. So now in every fountain i find i get inside. I think how once water was abundant, how i could once take a fountain bath",
+                video: "./videos/Reial.mp4"
+            },
+            {
+                name: "La Rambla, Barcelona",
+                location: [41.3804, 2.1736],
+                description: "I was thirsty in La Rambla. The more crowded place of Barcelona, where a bottle of water costs 4 € and produces plastic that will probably never be recycled. I found a water well, but there was no water.",
+                video: "./videos/Rambla.mp4"
+            },
+            {
+                name: "Pl. de Catalunya, Barcelona",
+                location: [41.3879, 2.1691],
+                description: "There is not enough water, so they emptied the fountains. So now in every fountain I find, I get inside. I found one before, another one now.",
+                video: "./videos/Cata.mp4"
+            },
+            // Scotland (Various Locations)
+            {
+                name: "Scotland River",
+                location: [56.4907, -4.2026],
+                description: "One of Scotland's rivers and the impact of fluctuating water levels on local ecosystems.",
+                video: "./videos/Scotland river.mp4"
+            },
+            {
+                name: "Scotland Seaside",
+                location: [56.2044, -5.4453],
+                description: "Scotland's coastline faces rising sea levels. This video explores the effects of excess water and coastal erosion.",
+                video: "./videos/Scotland seaside.mp4"
+            },
+            {
+                name: "Scottish Highlands",
+                location: [57.1524, -4.9994],
+                description: "Rugged landscapes of the Scottish Highlands, where water scarcity and excess are both significant issues.",
+                video: "./videos/SCOTLAND.mp4"
+            },
+            {
+                name: "Dead Water",
+                location: [57.4069, -4.5709],
+                description: "A video featuring a dead water region of Scotland, showing the challenges related to water scarcity in certain areas of the country.",
+                video: "./videos/city dead water.mp4"
+            },
+            // Additional Scotland Videos
+            {
+                name: "Why use the fountain as trash can?",
+                location: [55.8691, -4.2927], // Stewart Memorial Fountain, Kelvingrove-Park Glasgow
+                description: "Why do people put their trash in the fountain water where animals swim and drink or children could play? There are trash cans at every corner. So why the fountain? And why contaminate the water?",
+                video: "./videos/fountain_trash.mp4"
+            },
+            {
+                name: "Why is there no water?",
+                location: [55.8680, -4.2901], // Cyprus Duck Pond, Kelvingrove-Park Glasgow
+                description: "Why is there no water in the stream which connects the pond and the river? Is it because there are to many leaves? Or is it because of the trash? How can we make the water flow again?",
+                video: "./videos/no_water.mp4"
+            }
+        ];
+
+        // Add markers to the map
+        triggers.forEach(trigger => {
+            const marker = L.marker(trigger.location).addTo(map);
+            marker.bindPopup(`
+                <h3>${trigger.name}</h3>
+                <p>${trigger.description}</p>
+                <video controls>
+                    <source src="${trigger.video}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            `);
+        });
+    </script>
+</body>
+</html>
